@@ -5,21 +5,26 @@
  */
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <limits>
 #include <cmath>
 #include <time.h>
 #include <cctype>
 using namespace std;
 
+//[x] TODO: UNIT TEST FOR GET_TOTAL_PLAYERS FUNCTION
+
 int get_total_players() {
   int players = 0;
   while(players < 2 || players > 4) {
     cout << "Enter total number of players (2-4): ";
     cin >> players;
+    cout << endl;
   }
   return players;
 }
+
+// [x] TODO: UNIT TEST FOR ROLL_DICE FUNCTION
 
 int roll_dice() {
   srand(time(0));
@@ -28,11 +33,12 @@ int roll_dice() {
   cin.ignore();
   int first = rand() % 6 + 1; 
   int second = rand() % 6 + 1;
-  cout << "You rolled a " << second << ".\n";
   cout << "You rolled a " << first << " and a " << second <<
-          "... Move " << first + second << " spaces." <<  "\n";
+          "\nMove " << first + second << " spaces.." <<  endl;
   return first + second;
 }
+
+// [x] TODO: UNIT TEST FOR FIRST_ROLL FUNCTION
 
 int first_roll() {
   srand(time(0));
@@ -52,18 +58,30 @@ int first_roll() {
   }
  }
 
-// bool check_for_player(int dice_roll, int index, int board[], int positions_of_players[]) { 
-//   int len = sizeof(positions_of_players);
-//   for(int i=0; i<len; i++) {
-//     if (board[positions_of_players[index] + dice_roll] == 1) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
+ //[x] TODO: UNIT TEST FOR DISPLAY_POSITIONS_OF_PLAYERS
+
+void display_positions_of_players(int positions_of_players[], int players) {
+  cout << "Positions on board" << endl;
+  cout << "------------------" << endl;
+  for (int i=0; i<players; i++) {
+    cout << "Player " << (i + 1) << ": " << positions_of_players[i] << endl;
+    cout << endl;
+  }
+}
+
+ //[x] TODO: UNIT TEST FOR CHECK_FOR_PLAYERS FUNCTION
+
+bool check_for_player(int dice_roll, int index, int board[], int positions_of_players[], int players) { 
+  for(int i=0; i<players; i++) {
+    if (board[positions_of_players[index] + dice_roll] == 1) {
+      return true;
+    }
+  }
+  return false;
+}
 
 
-//[x] unit tests for swap_for_lead function completed
+//[x] TODO: UNIT TEST FOR SWAP_FOR_LEADER FUNCTION
 
 void swap_for_leader(int index, int positions_of_players[], int players) {
   int flag = false;
@@ -77,20 +95,19 @@ void swap_for_leader(int index, int positions_of_players[], int players) {
       player_in_the_lead = i;
     }
   }
-  // if flag remains false then the player is in the lead
+  // RETURN FUNCTION IF PLAYER IS IN LAST PLACE
   if (flag == false) {
     cout << "You are the leader. Stay where you are.\n";
     return;
   }
-  // this is the position of our leading player
+  // SWAP POSITIONS WITH LEADER
   int temp = positions_of_players[player_in_the_lead];
- //swap the leader with the current player
   positions_of_players[player_in_the_lead] = positions_of_players[index];
   positions_of_players[index] = temp;
 }
 
-//TODO
-//[x]unit test for swap_for_last function
+
+//[x] TODO: UNIT TEST FOR SWAP_FOR_LAST FUNCTION
 
 void swap_for_last(int index, int positions_of_players[], int players) {
   int flag = false;
@@ -115,17 +132,46 @@ void swap_for_last(int index, int positions_of_players[], int players) {
   positions_of_players[index] = temp;
 }
 
-//TODO
-//[x] UNIT TEST FOR START_OVER
-// THIS FUNCTION WILL RESET PLAYER BACK TO POSITION 0
-void start_over(int index, int positions_of_players[], int board[]) {
+
+
+//[x] TODO: UNIT TEST FOR START_OVER FUNCTION 
+
+void start_over(int index, int positions_of_players[], int board[], int players) {
   board[positions_of_players[index]] = 0;
   positions_of_players[index] -= positions_of_players[index];
+  display_positions_of_players(positions_of_players, players);
 }
 
 
-int special_conditions(int dice_roll, int index, int positions_of_players[], int players, int board[]) {
-  switch(dice_roll) {
+//[_] TODO: MAYBE CREATE ANOTHER FUNCTION FOR SENDING THE OTHER PERSON BACK TO 0
+
+
+
+
+// [x] TODO: UNIT TEST FOR BOUNDARY_CHECK FUNCTION
+
+bool boundry_check(int number_of_spaces_to_move, int current_player, int positions_of_players[], int SIZE_OF_BOARD) {
+  if (positions_of_players[current_player] + number_of_spaces_to_move > SIZE_OF_BOARD) {
+    return true;
+  }
+  return false;
+}
+
+
+//[_] TODO: UNIT TEST FOR MARK_POSITION_PLAYER_ON_BOARD FUNCTION
+
+void move_position_of_player_on_board(int board[], int position_of_players[], int player, int number_of_spaces_to_move) {
+  board[position_of_players[player] + number_of_spaces_to_move] = 1;
+}
+
+void update_position_of_player_on_scoreboard(int position_of_players[], int player, int number_of_spaces_to_move) {
+  position_of_players[player] = position_of_players[player] + number_of_spaces_to_move;
+}
+
+//[x] TODO: UNIT TEST FOR SPECIAL_CONDITIONS FUNCTION
+
+int special_conditions(int number_of_spaces_to_move, int index, int positions_of_players[], int players, int board[]) {
+  switch(number_of_spaces_to_move) {
     case 2:
       return 2;
       break;
@@ -143,6 +189,7 @@ int special_conditions(int dice_roll, int index, int positions_of_players[], int
       break;
     case 7:
       swap_for_leader(index, positions_of_players, players);
+      return 0;
       break;
     case 8:
       return 8;
@@ -155,70 +202,122 @@ int special_conditions(int dice_roll, int index, int positions_of_players[], int
       break;
     case 11:
       swap_for_last(index, positions_of_players, players);
+      return 0;
       break;
     case 12:
-      start_over(index, positions_of_players, board);
+      start_over(index, positions_of_players, board, players);
+      return 0;
       break;
   }
 }
 
-int main() {
-  // get players
-  int players = get_total_players(); 
 
-  /* this arrary will keep track of the player (index + 1)
-   * and the position on the board where each player is at */
-  int positions_of_players[players] = {10, 0, 0, 0};
 
-  
-  /* Create board.
-   * When a player lands on a space, we will change the space
-   * from 0 to 1 to mark that a player is there */
-  int board[50] = {0};
-  
-  special_conditions(12, 0, positions_of_players, players, board);
-  
-  for (auto x: positions_of_players) {
-    cout << x << endl;
+
+//[_] TODO: UNIT TEST FOR PLAY_THE_GAME_AGAIN FUNCTION
+
+
+
+//[_] TODO: UNIT TEST FOR IS_PLAYER_AT_THE_START FUNCTION
+
+bool is_player_at_the_start(int position_of_players[], int player) {
+  if (position_of_players[player] == 0) {
+    return true;
   }
+  return false;
+}
 
-//NOTES:
-//WHENEVER YOU NEED TO DECLARE PLAYERS ADD ONE TO PLAYER INDEX.
+// GAME LOOP
+//FUNCTION PROTOYPES REQUIRED FOR GAME
+void display_winner(int positions_of_players[], int players);
+void play_the_game_again();
+//[_] TODO: UNIT TEST FOR GAME FUNCTION
 
-  //game loop
-  // while (board[50] != 1) {
-  //    //loop through each player each time 
-  //   for (int i=0; i<indexes; i++) {
-     
-  //     //this is a new roll on the beginning space
-  //     if (players[i] == 0) {
-  //       int first_move = first_roll();
-  //       //check for player
-  //       special_conditions(first_move, i, board[], positon[])
-  //       if (check_for_player(first_move, i) {
-  //         //change position of player on current space to 0
-  //         //put current player on space
-  //         // players[i] = 0;
-  //       }
-  //       else{
-  //         board[position[i] + first_move] == 1;
-  //         position[player[i]] + first_move;
-  //       }  
-  //       // if (first_move > 0){
-  //       //   board[first_move] = 1;
-  //       //   players[i] = first_move;
-  //       // } 
-  //     }
-  //     else {
-  //       int dice_roll = roll_dice();
-  //       if ([players[i]] + dice_roll <= 50) {
-  //         board[players[i]] == 0;
-  //         players[i] += dice_roll;
-  //         board[players[i]] = 1;
-  //       }
-  //     }
-  //   }   
-  // }
+void game() {
+  int players = get_total_players();
+    /* this arrary will keep track of the player (index + 1)
+    * and the position on the board where each player is at */
+    
+  int positions_of_players[players] = {0};
+
+  /* Create board.
+  * When a player lands on a space, we will change the space
+  * from 0 to 1 to mark that a player is there */
+  const int SIZE_OF_BOARD = 51;
+  int board[SIZE_OF_BOARD] = {0};
+
+  int number_of_spaces_to_move = 0;
+  while(board[51] != 1) {
+    for (int current_player=0; current_player<players; current_player++) {
+      //LETS BEGIN BY ROLLING THE DICE
+      if (is_player_at_the_start(positions_of_players, current_player)){
+        number_of_spaces_to_move = first_roll();
+      } else {
+        number_of_spaces_to_move = roll_dice();
+      }
+      
+      //WE WILL UPDATE SPACES TO MOVE WITH ANY SPECIAL CONDITIONS
+      number_of_spaces_to_move = special_conditions(number_of_spaces_to_move, current_player, positions_of_players, players, board);
+      
+      //IF NUMBER OF SPACES TO MOVE IS 0 WE WILL BREAK OUT OF CONDITIONAL
+      if (number_of_spaces_to_move == 0) {
+        break;
+      } 
+
+      //WE WILL MOVE THE PLAYER AHEAD IF THERE IS NOT BOUNDARY ERROR OR SWAP IF PLAYER IS THERE
+      if (boundry_check(number_of_spaces_to_move, current_player, positions_of_players, SIZE_OF_BOARD)==false) {
+        if (check_for_player(number_of_spaces_to_move, current_player, board, positions_of_players, players)) {
+          int space = positions_of_players[current_player] + number_of_spaces_to_move;
+          for (int i=0; i<players; i++) {
+            if (positions_of_players[i] == space) {
+              int temp = positions_of_players[i];
+              positions_of_players[i] = positions_of_players[current_player];
+              positions_of_players[current_player] = temp;
+              break;
+            }
+          }
+        }
+        else { 
+          move_position_of_player_on_board(board, positions_of_players, current_player, number_of_spaces_to_move);
+          update_position_of_player_on_scoreboard(positions_of_players, current_player, number_of_spaces_to_move);
+        }
+        
+      }
+      
+      //WE WILL DISPLAY THE POSITIONS AFTER EACH MOVE
+      display_positions_of_players(positions_of_players, players);
+    }
+
+  }
+  display_winner(positions_of_players, players);
+}
+
+void play_the_game_again() {
+  char decision = 'N';
+  do {
+    cout << "Would you like to play the game again? Press Y for YES or N for NO: ";
+    cin >> decision;
+    decision = toupper(decision);
+    if (decision == 'Y') {
+      game();
+    }
+  } while (decision != 'Y' || decision != 'N');
+
+}
+
+//[_] TODO: UNIT TEST FOR DISPLAY_WINNER FUNCTION
+
+void display_winner(int positions_of_players[], int players) {
+  for (int i=0; i<players; i++){
+    if (positions_of_players[i] == 50) {
+      cout << "Player " << (i + 1) << " is the winner!!!" << endl;
+    }
+  }
+  play_the_game_again();
+}
+
+int main() {
+  game();
 }
 
 
