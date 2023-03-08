@@ -136,10 +136,10 @@ void swap_for_last(int index, int positions_of_players[], int players) {
 
 //[x] TODO: UNIT TEST FOR START_OVER FUNCTION 
 
-void start_over(int index, int positions_of_players[], int board[], int players) {
+void start_over(int index, int positions_of_players[], int board[]) {
   board[positions_of_players[index]] = 0;
   positions_of_players[index] -= positions_of_players[index];
-  display_positions_of_players(positions_of_players, players);
+  //display_positions_of_players(positions_of_players, players);
 }
 
 
@@ -161,7 +161,8 @@ bool boundry_check(int number_of_spaces_to_move, int current_player, int positio
 //[_] TODO: UNIT TEST FOR MARK_POSITION_PLAYER_ON_BOARD FUNCTION
 
 void move_position_of_player_on_board(int board[], int position_of_players[], int player, int number_of_spaces_to_move) {
-  board[position_of_players[player] + number_of_spaces_to_move] = 1;
+  int test = board[position_of_players[player] + number_of_spaces_to_move] = 1;
+  cout << test << endl;
 }
 
 void update_position_of_player_on_scoreboard(int position_of_players[], int player, int number_of_spaces_to_move) {
@@ -205,16 +206,12 @@ int special_conditions(int number_of_spaces_to_move, int index, int positions_of
       return 0;
       break;
     case 12:
-      start_over(index, positions_of_players, board, players);
+      start_over(index, positions_of_players, board);
       return 0;
       break;
   }
 }
 
-
-
-
-//[_] TODO: UNIT TEST FOR PLAY_THE_GAME_AGAIN FUNCTION
 
 
 
@@ -260,9 +257,9 @@ void game() {
       number_of_spaces_to_move = special_conditions(number_of_spaces_to_move, current_player, positions_of_players, players, board);
       
       //IF NUMBER OF SPACES TO MOVE IS 0 WE WILL BREAK OUT OF CONDITIONAL
-      if (number_of_spaces_to_move == 0) {
-        break;
-      } 
+      // if (number_of_spaces_to_move == 0) {
+      //   break;
+      // } 
 
       //WE WILL MOVE THE PLAYER AHEAD IF THERE IS NOT BOUNDARY ERROR OR SWAP IF PLAYER IS THERE
       if (boundry_check(number_of_spaces_to_move, current_player, positions_of_players, SIZE_OF_BOARD)==false) {
@@ -292,6 +289,9 @@ void game() {
   display_winner(positions_of_players, players);
 }
 
+
+//[_] TODO: UNIT TEST FOR PLAY_THE_GAME_AGAIN FUNCTION
+
 void play_the_game_again() {
   char decision = 'N';
   do {
@@ -320,10 +320,10 @@ int main() {
   game();
 }
 
-
-
-
-
+/*
+  LEFT OFF TRYING TO FIGURE OUT THE DISPLAY OF SWAP FOR LEAD, START OVER AND SWAP FOR LAST ARE CALLED
+  PROGRAM RUNS JUST A COUPLE BUGS NEED TO FIXED
+  */
 
 
 
