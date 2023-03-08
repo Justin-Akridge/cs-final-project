@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <limits>
 #include <time.h>
 using namespace std;
 
@@ -18,45 +19,59 @@ int get_total_players() {
   return players;
 }
 
-//function returns die
-int roll_die() {
+int roll_dice() {
   srand(time(0));
+  cout << "Press enter to the roll dice";
+  cin.get();
+  cin.ignore();
   int first = rand() % 6 + 1; 
   int second = rand() % 6 + 1;
+  cout << "You rolled a " << second << ".\n";
+  cout << "You rolled a " << first << " and a " << second <<
+          "... Move " << first + second << " spaces." <<  "\n";
   return first + second;
 }
 
 int first_move() {
-  int first_roll = roll_die();
-  int second_roll = roll_die();
+  srand(time(0));
+  cout << "Press enter to the roll dice";
+  cin.get();
+  cin.ignore();
+  int first_roll = rand() % 6 + 1;
+  int second_roll = rand() % 6 + 1;
+  cout << "You rolled a " << first_roll << " and a " << second_roll << "\n";
   if(first_roll != second_roll) {
+    cout << "You did not roll a double. Wait for another turn.\n";
     return 0;
   }
-  else{
+  else {
     return first_roll + second_roll;
   }
  }
 
-int check_for_player(int dice_roll, int index) { 
+int check_for_player(int dice_roll, int index, int board[], int players[]) { 
   return (board[players[index] + dice_roll -1 ] == 1);
 }
 
 int main() {
   // get players
   int indexes = get_total_players(); 
-  int players[indexes] = {};
-  for (int i=1; i<=players; i++) {
-    player_array[i] = i;
+  int players[indexes] = {0};
+  for (int i=1; i<=indexes; i++) {
+    players[i] = i;
   }
 
+  int position[indexes] = {0};
+  // need another array to keep track of the positions of each
+  // and then match that to where it is on the board
   //create board
   int board[50] = {0};
   
   //game loop
   while (board[50] != 1) {
-    //loop through each player each time 
+     //loop through each player each time 
     for (int i=0; i<indexes; i++) {
-      
+     
       //this is a new roll on the beginning space
       if (players[i] == 0) {
         int first_move == first_move();
