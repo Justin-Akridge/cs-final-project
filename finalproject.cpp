@@ -282,7 +282,7 @@ void game() {
       number_of_spaces_to_move = special_conditions(number_of_spaces_to_move, current_player, positions_of_players, players, board);
 
       //WE WILL MOVE THE PLAYER AHEAD IF THERE IS NOT BOUNDARY ERROR OR SWAP IF PLAYER IS THERE
-      if (boundry_check(number_of_spaces_to_move, current_player, positions_of_players, SIZE_OF_BOARD)==false) {
+      if (!boundry_check(number_of_spaces_to_move, current_player, positions_of_players, SIZE_OF_BOARD)) {
         //IF PLAYER IS ON SPACE THEN SWAP PLACES WITH THEM
         if (check_for_player(number_of_spaces_to_move, current_player, board, positions_of_players, players)) {
           int space = positions_of_players[current_player] + number_of_spaces_to_move;
