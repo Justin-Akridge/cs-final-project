@@ -10,6 +10,7 @@
 #include <cmath>
 #include <time.h>
 #include <cctype>
+#include <string.h>
 using namespace std;
 
 //[x] TODO: UNIT TEST FOR GET_TOTAL_PLAYERS FUNCTION
@@ -28,13 +29,12 @@ int get_total_players() {
 
 int roll_dice() {
   srand(time(0));
-  cout << "Press enter to the roll dice";
-  cin.get();
+  cout << "Press enter to the roll dice" << endl;
   cin.ignore();
   int first = rand() % 6 + 1; 
   int second = rand() % 6 + 1;
-  cout << "You rolled a " << first << " and a " << second <<
-          "\nMove " << first + second << " spaces.." <<  endl;
+  cout << "You rolled a " << first << " and a " << second << endl;
+  //         "\nMove " << first + second << " spaces.." <<  endl;
   return first + second;
 }
 
@@ -42,18 +42,17 @@ int roll_dice() {
 
 int first_roll() {
   srand(time(0));
-  cout << "Press enter to the roll dice";
-  cin.get();
+  cout << "Press enter to the roll dice" << endl;
   cin.ignore();
   int first = rand() % 6 + 1;
   int second = rand() % 6 + 1;
-  cout << "You rolled a " << first << " and a " << second << "\n";
+  cout << "You rolled a " << first << " and a " << second << endl;
   if(first != second) {
-    cout << "You did not roll a double. Wait for another turn.\n";
+    cout << "You did not roll a double. Wait for another turn." << endl;
     return 0;
   }
   else {
-    cout << "Move " << first + second << " spaces..\n";
+    //cout << "Move " << first + second << " spaces..\n";
     return first + second;
   }
  }
@@ -61,6 +60,7 @@ int first_roll() {
  //[x] TODO: UNIT TEST FOR DISPLAY_POSITIONS_OF_PLAYERS
 
 void display_positions_of_players(int positions_of_players[], int players) {
+  cout << endl;
   cout << "Positions on board" << endl;
   cout << "------------------" << endl;
   for (int i=0; i<players; i++) {
@@ -121,12 +121,12 @@ void swap_for_last(int index, int positions_of_players[], int players) {
       position_of_last_place = positions_of_players[i];
     }
   }
-  // if flag remains false then the player is in the lead
+  // IF FLAG REMAINS FALSE THEN THE PLAYER IS IN THE LEAD
   if (flag == false) {
     cout << "You are already in last. Stay where you are.\n";
     return;
   }
-  // swap players position with last place
+  // SWAP PLAYERS POSITION WITH LAST PLACE
   int temp = positions_of_players[player_in_last_place];
   positions_of_players[player_in_last_place] = positions_of_players[index];
   positions_of_players[index] = temp;
@@ -138,7 +138,7 @@ void swap_for_last(int index, int positions_of_players[], int players) {
 
 void start_over(int index, int positions_of_players[], int board[]) {
   board[positions_of_players[index]] = 0;
-  positions_of_players[index] -= positions_of_players[index];
+  positions_of_players[index] = 0;
   //display_positions_of_players(positions_of_players, players);
 }
 
@@ -151,68 +151,83 @@ void start_over(int index, int positions_of_players[], int board[]) {
 // [x] TODO: UNIT TEST FOR BOUNDARY_CHECK FUNCTION
 
 bool boundry_check(int number_of_spaces_to_move, int current_player, int positions_of_players[], int SIZE_OF_BOARD) {
-  if (positions_of_players[current_player] + number_of_spaces_to_move > SIZE_OF_BOARD) {
+  if (positions_of_players[current_player] + number_of_spaces_to_move > SIZE_OF_BOARD ||
+      positions_of_players[current_player] + number_of_spaces_to_move < 0) {
+    cout << "You went out of bounds. Go back to original position.";
     return true;
   }
   return false;
 }
 
 
-//[_] TODO: UNIT TEST FOR MARK_POSITION_PLAYER_ON_BOARD FUNCTION
+//[X] TODO: UNIT TEST FOR MARK_POSITION_PLAYER_ON_BOARD FUNCTION
 
 void move_position_of_player_on_board(int board[], int position_of_players[], int player, int number_of_spaces_to_move) {
   int test = board[position_of_players[player] + number_of_spaces_to_move] = 1;
-  cout << test << endl;
 }
 
+
+//[X] TODO: UNIT TEST FOR UPDATE_POSITION_OF_PLAYER_ON_SCOREBOARD FUNCTION
+
 void update_position_of_player_on_scoreboard(int position_of_players[], int player, int number_of_spaces_to_move) {
-  position_of_players[player] = position_of_players[player] + number_of_spaces_to_move;
+  position_of_players[player] += number_of_spaces_to_move;
 }
 
 //[x] TODO: UNIT TEST FOR SPECIAL_CONDITIONS FUNCTION
 
 int special_conditions(int number_of_spaces_to_move, int index, int positions_of_players[], int players, int board[]) {
   switch(number_of_spaces_to_move) {
+    case 0:
+      return 0;
     case 2:
+      cout << "Move 2 spaces.." << endl;
       return 2;
       break;
     case 3:
+      cout << "Move 3 spaces.." << endl;
       return 3;
       break;
     case 4:
+      cout << "Go back one space.." << endl;
       return -1;
       break;
     case 5:
+      cout << "Move 5 spaces.." << endl;
       return 5;
       break;
     case 6:
+      cout << "Move 6 spaces.." << endl;
       return 6;
       break;
     case 7:
+      cout << "Swap positions for leader.." << endl;
       swap_for_leader(index, positions_of_players, players);
       return 0;
       break;
     case 8:
+      cout << "Move 8 spaces.." << endl;
       return 8;
       break;
     case 9:
+      cout << "Move 9 spaces.." << endl;
       return 9;
       break;
     case 10:
+      cout << "Move 10 spaces.." << endl;
       return 10;
       break;
     case 11:
+      cout << "Swap positions with last place.." << endl;
       swap_for_last(index, positions_of_players, players);
       return 0;
       break;
     case 12:
+      cout << "Go back to the beginning.." << endl;
       start_over(index, positions_of_players, board);
       return 0;
       break;
   }
 }
-
-
 
 
 //[_] TODO: UNIT TEST FOR IS_PLAYER_AT_THE_START FUNCTION
@@ -232,19 +247,27 @@ void play_the_game_again();
 
 void game() {
   int players = get_total_players();
-    /* this arrary will keep track of the player (index + 1)
-    * and the position on the board where each player is at */
-    
-  int positions_of_players[players] = {0};
+  
+  /* this arrary will keep track of the player (index + 1)
+  * and the position on the board where each player is at */
+  int positions_of_players[players];
+  for(int i=0; i<players; i++) {
+    positions_of_players[i] = 0;
+  }
+  
 
   /* Create board.
   * When a player lands on a space, we will change the space
   * from 0 to 1 to mark that a player is there */
-  const int SIZE_OF_BOARD = 51;
-  int board[SIZE_OF_BOARD] = {0};
+  const int SIZE_OF_BOARD = 50;
+  int board[SIZE_OF_BOARD];
+  for (int i=0; i<SIZE_OF_BOARD; i++) {
+    board[i] = 0;
+  }
+
 
   int number_of_spaces_to_move = 0;
-  while(board[51] != 1) {
+  while(board[50] != 1) {
     for (int current_player=0; current_player<players; current_player++) {
       //LETS BEGIN BY ROLLING THE DICE
       if (is_player_at_the_start(positions_of_players, current_player)){
@@ -254,15 +277,13 @@ void game() {
       }
       
       //WE WILL UPDATE SPACES TO MOVE WITH ANY SPECIAL CONDITIONS
-      number_of_spaces_to_move = special_conditions(number_of_spaces_to_move, current_player, positions_of_players, players, board);
       
-      //IF NUMBER OF SPACES TO MOVE IS 0 WE WILL BREAK OUT OF CONDITIONAL
-      // if (number_of_spaces_to_move == 0) {
-      //   break;
-      // } 
+      number_of_spaces_to_move = special_conditions(number_of_spaces_to_move, current_player, positions_of_players, players, board);
+        
 
       //WE WILL MOVE THE PLAYER AHEAD IF THERE IS NOT BOUNDARY ERROR OR SWAP IF PLAYER IS THERE
       if (boundry_check(number_of_spaces_to_move, current_player, positions_of_players, SIZE_OF_BOARD)==false) {
+        //IF PLAYER IS ON SPACE THEN SWAP PLACES WITH THEM
         if (check_for_player(number_of_spaces_to_move, current_player, board, positions_of_players, players)) {
           int space = positions_of_players[current_player] + number_of_spaces_to_move;
           for (int i=0; i<players; i++) {
@@ -274,23 +295,26 @@ void game() {
             }
           }
         }
+        //MOVE THE PLAYER ON THE BOARD AND UPDATE SCORE
         else { 
           move_position_of_player_on_board(board, positions_of_players, current_player, number_of_spaces_to_move);
           update_position_of_player_on_scoreboard(positions_of_players, current_player, number_of_spaces_to_move);
         }
-        
       }
       
       //WE WILL DISPLAY THE POSITIONS AFTER EACH MOVE
       display_positions_of_players(positions_of_players, players);
+      //BREAK OUT OF FOR LOOP TO TEST WHILE LOOP CONDITION TO PREVENT EXTRA MOVES..END GAME
+      if (board[50] == 1) {
+        break;
+      }
     }
-
   }
   display_winner(positions_of_players, players);
 }
 
 
-//[_] TODO: UNIT TEST FOR PLAY_THE_GAME_AGAIN FUNCTION
+//[x] TODO: UNIT TEST FOR PLAY_THE_GAME_AGAIN FUNCTION
 
 void play_the_game_again() {
   char decision = 'N';
@@ -301,29 +325,28 @@ void play_the_game_again() {
     if (decision == 'Y') {
       game();
     }
-  } while (decision != 'Y' || decision != 'N');
+  } while (decision != 'Y' && decision != 'N');
 
 }
 
-//[_] TODO: UNIT TEST FOR DISPLAY_WINNER FUNCTION
+//[x] TODO: UNIT TEST FOR DISPLAY_WINNER FUNCTION
 
 void display_winner(int positions_of_players[], int players) {
   for (int i=0; i<players; i++){
     if (positions_of_players[i] == 50) {
       cout << "Player " << (i + 1) << " is the winner!!!" << endl;
+      cout << endl;
     }
   }
   play_the_game_again();
 }
 
+
 int main() {
   game();
 }
 
-/*
-  LEFT OFF TRYING TO FIGURE OUT THE DISPLAY OF SWAP FOR LEAD, START OVER AND SWAP FOR LAST ARE CALLED
-  PROGRAM RUNS JUST A COUPLE BUGS NEED TO FIXED
-  */
+
 
 
 
