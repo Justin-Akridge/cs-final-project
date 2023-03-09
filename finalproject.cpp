@@ -144,7 +144,7 @@ void start_over(int index, int positions_of_players[], int board[]) {
 
 
 //[_] TODO: MAYBE CREATE ANOTHER FUNCTION FOR SENDING THE OTHER PERSON BACK TO 0
-
+//FUNCTION EXISTS IN GAME LOOP
 
 
 
@@ -230,7 +230,7 @@ int special_conditions(int number_of_spaces_to_move, int index, int positions_of
 }
 
 
-//[_] TODO: UNIT TEST FOR IS_PLAYER_AT_THE_START FUNCTION
+//[x] TODO: UNIT TEST FOR IS_PLAYER_AT_THE_START FUNCTION
 
 bool is_player_at_the_start(int position_of_players[], int player) {
   if (position_of_players[player] == 0) {
@@ -243,11 +243,13 @@ bool is_player_at_the_start(int position_of_players[], int player) {
 //FUNCTION PROTOYPES REQUIRED FOR GAME
 void display_winner(int positions_of_players[], int players);
 void play_the_game_again();
-//[_] TODO: UNIT TEST FOR GAME FUNCTION
+
+
+//[x] TODO: UNIT TEST FOR GAME FUNCTION
 
 void game() {
   int players = get_total_players();
-  
+
   /* this arrary will keep track of the player (index + 1)
   * and the position on the board where each player is at */
   int positions_of_players[players];
@@ -277,9 +279,7 @@ void game() {
       }
       
       //WE WILL UPDATE SPACES TO MOVE WITH ANY SPECIAL CONDITIONS
-      
       number_of_spaces_to_move = special_conditions(number_of_spaces_to_move, current_player, positions_of_players, players, board);
-        
 
       //WE WILL MOVE THE PLAYER AHEAD IF THERE IS NOT BOUNDARY ERROR OR SWAP IF PLAYER IS THERE
       if (boundry_check(number_of_spaces_to_move, current_player, positions_of_players, SIZE_OF_BOARD)==false) {
